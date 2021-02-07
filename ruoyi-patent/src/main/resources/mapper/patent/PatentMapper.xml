@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.patent.mapper.PatentMapper">
+    
+    <resultMap type="Patent" id="PatentResult">
+        <result property="id"    column="id"    />
+        <result property="patentTitle"    column="patent_title"    />
+        <result property="documentNumber"    column="document_number"    />
+        <result property="documentDate"    column="document_date"    />
+        <result property="applicationNumber"    column="application_number"    />
+        <result property="applicationDate"    column="application_date"    />
+        <result property="applicant"    column="applicant"    />
+        <result property="inventor"    column="inventor"    />
+        <result property="ipc"    column="ipc"    />
+        <result property="summary"    column="summary"    />
+        <result property="legalInfo"    column="legal_info"    />
+    </resultMap>
+
+    <sql id="selectPatentVo">
+        select id, patent_title, document_number, document_date, application_number, application_date, applicant, inventor, ipc, summary, legal_info from patent
+    </sql>
+
+    <select id="selectPatentList" parameterType="Patent" resultMap="PatentResult">
+        <include refid="selectPatentVo"/>
+        <where>  
+            <if test="patentTitle != null  and patentTitle != ''"> and patent_title = #{patentTitle}</if>
+            <if test="documentNumber != null  and documentNumber != ''"> and document_number = #{documentNumber}</if>
+            <if test="documentDate != null "> and document_date = #{documentDate}</if>
+            <if test="applicationNumber != null  and applicationNumber != ''"> and application_number = #{applicationNumber}</if>
+            <if test="applicationDate != null "> and application_date = #{applicationDate}</if>
+            <if test="applicant != null  and applicant != ''"> and applicant = #{applicant}</if>
+            <if test="inventor != null  and inventor != ''"> and inventor = #{inventor}</if>
+            <if test="ipc != null  and ipc != ''"> and ipc = #{ipc}</if>
+            <if test="summary != null  and summary != ''"> and summary = #{summary}</if>
+            <if test="legalInfo != null  and legalInfo != ''"> and legal_info = #{legalInfo}</if>
+        </where>
+    </select>
+
+    <select id="selectPatentById" parameterType="Long" resultMap="PatentResult">
+        <include refid="selectPatentVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="searchByKeyWord" parameterType="String" resultMap="PatentResult">
+        <include refid="selectPatentVo"/>
+        where patent_title like CONCAT('%','${keyWord}','%')
+    </select>
+
+    <insert id="insertPatent" parameterType="Patent" useGeneratedKeys="true" keyProperty="id">
+        insert into patent
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="patentTitle != null">patent_title,</if>
+            <if test="documentNumber != null">document_number,</if>
+            <if test="documentDate != null">document_date,</if>
+            <if test="applicationNumber != null">application_number,</if>
+            <if test="applicationDate != null">application_date,</if>
+            <if test="applicant != null">applicant,</if>
+            <if test="inventor != null">inventor,</if>
+            <if test="ipc != null">ipc,</if>
+            <if test="summary != null">summary,</if>
+            <if test="legalInfo != null">legal_info,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="patentTitle != null">#{patentTitle},</if>
+            <if test="documentNumber != null">#{documentNumber},</if>
+            <if test="documentDate != null">#{documentDate},</if>
+            <if test="applicationNumber != null">#{applicationNumber},</if>
+            <if test="applicationDate != null">#{applicationDate},</if>
+            <if test="applicant != null">#{applicant},</if>
+            <if test="inventor != null">#{inventor},</if>
+            <if test="ipc != null">#{ipc},</if>
+            <if test="summary != null">#{summary},</if>
+            <if test="legalInfo != null">#{legalInfo},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePatent" parameterType="Patent">
+        update patent
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="patentTitle != null">patent_title = #{patentTitle},</if>
+            <if test="documentNumber != null">document_number = #{documentNumber},</if>
+            <if test="documentDate != null">document_date = #{documentDate},</if>
+            <if test="applicationNumber != null">application_number = #{applicationNumber},</if>
+            <if test="applicationDate != null">application_date = #{applicationDate},</if>
+            <if test="applicant != null">applicant = #{applicant},</if>
+            <if test="inventor != null">inventor = #{inventor},</if>
+            <if test="ipc != null">ipc = #{ipc},</if>
+            <if test="summary != null">summary = #{summary},</if>
+            <if test="legalInfo != null">legal_info = #{legalInfo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePatentById" parameterType="Long">
+        delete from patent where id = #{id}
+    </delete>
+
+    <delete id="deletePatentByIds" parameterType="String">
+        delete from patent where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>
